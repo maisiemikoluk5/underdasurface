@@ -1,4 +1,63 @@
-﻿# script.rpy — Mole Man: Storyboard Line Game (Ren'Py)
+﻿# Fade-in animation
+transform menu_fade:
+    alpha 0.0
+    yoffset 20
+    linear 0.8 alpha 1.0 yoffset 0
+
+
+# Modern Button Style
+style pretty_button:
+    background "#FFFFFF15"
+    hover_background "#FFFFFF35"
+    padding (18, 12)
+    xminimum 260
+
+style pretty_button_text:
+    size 32
+    color "#FFFFFF"
+    xalign 0.5
+
+
+screen main_menu():
+
+    tag menu
+
+    # Background
+    add "main.png"
+
+    # Soft dark overlay for readability
+    add Solid("#00000080")
+
+    # Centered Content
+    vbox:
+        spacing 35
+        xalign 0.5
+        yalign 0.5
+        at menu_fade
+
+        # Game Title
+        text "Connecting Tunnels":
+            size 90
+            color "#FFFFFF"
+            outlines [(3, "#000000", 0, 0)]
+            xalign 0.5
+
+        null height 20
+
+        # Buttons
+        textbutton "Start" style "pretty_button":
+            action Start()
+
+        textbutton "Load" style "pretty_button":
+            action ShowMenu("load")
+
+        textbutton "Settings" style "pretty_button":
+            action ShowMenu("preferences")
+
+        textbutton "Quit" style "pretty_button":
+            action Quit(confirm=True)
+
+# script.rpy — Mole Man: Storyboard Line Game (Ren'Py)
 
 define p = Character("You")
 define m = Character("MoleMan", color="#c8d6ff")
@@ -13,12 +72,14 @@ init:
     image bg sewer = "bg_sewer.png"
     image bg tacobell = "bg_taco.png"
     image you = "yn.png"
-    image mole = "Mole Man.png"
+    image moleman = "Mole Man.png"
     image server inout = "server_inout"
     image server taco = "server_taco.png"
     image street = "street.PNG"
     image silhouette = "moleman silhouette.PNG"
     image bg tacobell poo = "poo.PNG"
+    image kiss = "kiss.PNG"
+    image bg dark = "dark sewer.png"
 
 default hp = 1
 default has_salad = False
@@ -49,9 +110,11 @@ label start:
     n "Rain stitches the street into silver lines."
     n "You lift the sewer hatch and climb down, lantern trembling in your hand."
     b "Emergency blockage. Sewer line 7B. Fix it or else you're DONE!"
-    scene bg sewer with dissolve
+    scene bg dark with dissolve
+    show silhouette at left
     n "You hear scritch-scritch... and then a polite cough."
     h "Down here, we prefer guests who knock."
+    hide silhouette
 
     menu:
         "Call out: Sorry, I didn’t know another division was cleaning this section…":
@@ -63,15 +126,13 @@ label start:
 
 label leave:
     scene bg end with dissolve
-    show you at left
     n "You trudge back up the manhole into the pouring rain."
     n "Boss isn't gonna be happy about this..."
-    hide you
     n "THE END (Coward’s Cut)."
     return
 
 label deodorant_needed:
-    scene bg sewer
+    scene bg dark
     show silhouette at left
     n "He smells you."
     m "I would recognize that scent anywhere…"
@@ -90,7 +151,7 @@ label meet_mole:
     scene bg sewer with dissolve
     n "Mermories flash back to you."
     p "oh..i think thats my ex on foenem"
-    show moleman with dissolve at left
+    show moleman at left
     m "Y-youve changed… In a good way, of course!"
     p "“i could say the same for you…”"
     n "You both blush, an air of heaviness hanging between you two."
@@ -185,8 +246,8 @@ label inn_out:
     n "you think: h-he remembered where we first met…" 
     hide moleman 
     menu:
-        "Order a four-by-four with extra cheese and animal style fries" if not has_animalstylecheesefried:
-            $ has_animalstylecheesefried = True
+        "Order a four-by-four with extra cheese and animal style fries" if not has_animalstylecheesefries:
+            $ has_animalstylecheesefries = True
             jump self_respect
         "Order a salad" if not has_salad:
             $ has_salad = True
@@ -256,6 +317,7 @@ label try_again:
     m "You just never looked back."
     n "Slowly you melt into his arms, and the world seems to fade into "
     hide moleman
+    show kiss at truecenter
     n "THE END (Back together ending <3)."
     return
 
